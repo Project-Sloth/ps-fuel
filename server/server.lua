@@ -33,7 +33,7 @@ RegisterNetEvent("ps-fuel:server:OpenMenu", function (amount, inGasStation, hasW
 		TriggerClientEvent('qb-menu:client:openMenu', src, {
 			{
 				header = 'Gas Station',
-				txt = 'Refuel from jerry can.' ,
+				txt = 'Refuel from jerry can' ,
 				params = {
 					event = "ps-fuel:client:RefuelVehicle",
 					args = total,

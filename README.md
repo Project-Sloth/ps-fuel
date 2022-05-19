@@ -65,6 +65,7 @@ end
 (removes jerry can refull when pulled from inventory)
 
 ## Weapons
+* Change the thread in qb-weapons/client/main.lua
 
 * Before
 ```lua

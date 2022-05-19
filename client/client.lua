@@ -303,7 +303,7 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 			QBCore.Functions.Notify("Vehicle already full", "error")
 			return
 		end
-		if ammo <= 0 then
+		if ammo <= 40 then
 			QBCore.Functions.Notify("No fuel in gas can", "error")
 		else
 			RequestAnimDict("weapon@w_sp_jerrycan")

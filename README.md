@@ -17,7 +17,7 @@ A NoPixel inspired functionality fuel system that uses PolyZones that target spe
 
 
 ### Start installing now
-We will now provide you with a step-by-step guide for the installation process. Shouldn't take too long and it should be too confusing either! 
+We will now provide you with a step-by-step guide for the installation process. Shouldn't take too long and it shouldn't be too confusing either! 
 
 ### Step 1:
 Go ahead and start by dragging and dropping ps-fuel into your designated resources folder.
@@ -144,6 +144,6 @@ https://user-images.githubusercontent.com/91661118/169447776-815aae46-53e0-40cd-
 https://user-images.githubusercontent.com/91661118/169447249-b20abaca-fd1b-49ef-88c2-b6683b266f41.mp4
 
 ### Credits:
-Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long awaited solution for jerry cans containing the same amount of fuel each time you equip it. This release wouldn't be possible without them.
+Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long-awaited issue of jerry cans not saving the proper amount of fuel each time you equip it. This release wouldn't be possible without them.
 
 ##### Copyright © 2022 Project Sloth. All rights reserved.

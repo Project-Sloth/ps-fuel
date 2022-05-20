@@ -3,10 +3,7 @@
 ### ps-fuel
 A NoPixel inspired functionality fuel system that uses PolyZones that target specific areas that allow you to have the abilitity to refuel your vehicles.
 
-
-
-
-
+![Project Sloth Buttons](https://user-images.githubusercontent.com/91661118/169454003-488c8994-eec9-4b92-9b0c-f3a675be7d1b.png)
 
 ### Dependencies:
 * [qb-target](https://github.com/BerkieBb/qb-target)
@@ -30,7 +27,9 @@ If you are still lost, Slothy has created a few GIF's to help guide you through 
 ![explorer_rKiz0tBzmo](https://user-images.githubusercontent.com/91661118/169417369-59282006-7284-477d-853f-c29b108baa5d.gif)
 
 ### Step 2:
-Open your entire resources folder with Visual Studio Code (or whichever program you use) and replace all exsiting exports titled "LegacyFuel" with "ps-fuel" instead.
+Open your entire resources folder with Visual Studio Code (or whichever program you use) and replace all exsiting exports titled "LegacyFuel" with "ps-fuel" instead. 
+
+**If you have the previous resource "lj-fuel" do the same thing and replace that with "ps-fuel" or just get this newer version to avoid any conflictions or confusion.**
 
 ![explorer_vpSwery89h](https://user-images.githubusercontent.com/91661118/169423238-99659010-718d-4d95-a73e-8aa2b232ebb4.gif)
 
@@ -110,3 +109,41 @@ end)
 After it takes you to spot we need, copy this snippet and paste it over the few lines shown in the GIF below.
 
 ![Code_yecDDjuRVG](https://user-images.githubusercontent.com/91661118/169425085-6eaeead9-9398-4ac0-8e0f-b6d116326e97.gif)
+
+<br>
+<br>
+
+![Project Sloth GitHub Sub Features Banner](https://user-images.githubusercontent.com/91661118/169454782-7891d081-63b7-4e40-b26a-d995bd7c99bb.png)
+
+#### Some features to mention within this ps-fuel:
+* Show all gas station blips (found in shared/config.lua)
+* Vehicle chance of blowing up (found in shared/config.lua)
+* Vehicle blowing up chance percent (found in shared/config.lua)
+* Global tax and fuel prices (found in shared/config.lua)
+* Close resembled NoPixel animation while refueling vehicles
+* Target eye for all actions
+* Menu estimating cost for vehicle being refueled (tax included)
+* Buy and refuel jerry cans
+* Jerry cans save amount of fuel left while not equipped
+
+<br>
+<br>
+
+![Project Sloth GitHub Sub Showcase Banner](https://user-images.githubusercontent.com/91661118/169444909-e642a02d-5f74-4016-9044-f380150307ca.png)
+
+### Time to show you what it looks like!
+Here's a few showcased examples while using ps-fuel.
+
+#### Jerry can saving correct amount left:
+https://user-images.githubusercontent.com/91661118/169445831-babf91d3-86f1-47cc-ad12-4402dce977f9.mp4
+
+#### Buying and refueling jerry can:
+https://user-images.githubusercontent.com/91661118/169447776-815aae46-53e0-40cd-a9e5-347115dc1748.mp4
+
+#### Refueling vehicle:
+https://user-images.githubusercontent.com/91661118/169447249-b20abaca-fd1b-49ef-88c2-b6683b266f41.mp4
+
+### Credits:
+Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long awaited solution for jerry cans containing the same amount of fuel each time you equip it. This release wouldn't be possible without them.
+
+##### Copyright © 2022 Project Sloth. All rights reserved.

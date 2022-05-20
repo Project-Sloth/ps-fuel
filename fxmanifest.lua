@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'lj-fuel'
-version '1.3'
-author 'github.com/loljoshie'
+description 'ps-fuel'
+version '1.0'
+author 'github.com/Project-Sloth'
 
 client_scripts {
     '@PolyZone/client.lua',

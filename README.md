@@ -117,7 +117,6 @@ After it takes you to spot we need, copy this snippet and paste it over the few 
 
 #### Some features to mention within this ps-fuel:
 * Show all gas station blips (found in shared/config.lua)
-* Vehicle chance of blowing up (found in shared/config.lua)
 * Vehicle blowing up chance percent (found in shared/config.lua)
 * Global tax and fuel prices (found in shared/config.lua)
 * Close resembled NoPixel animation while refueling vehicles

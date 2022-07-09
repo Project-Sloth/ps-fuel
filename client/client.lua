@@ -218,7 +218,7 @@ RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 			},
 		})
 	else
-		QBCore.Functions.Notify(Lang:t("already_full"), "error")
+		QBCore.Functions.Notify(Lang:t("notify.already_full"), "error")
 	end
 end)
 

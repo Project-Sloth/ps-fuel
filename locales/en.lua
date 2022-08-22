@@ -1,6 +1,6 @@
 local Translations = {
     notify = {
-        ["no_money"] = "Don't not have enough money",
+        ["no_money"] = "You don't have enough money",
         ["refuel_cancel"] = "Refueling Canceled",
         ["jerrycan_full"] = "This jerry can is already full",
         ["jerrycan_empty"] = "This jerry can is empty",

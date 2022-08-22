@@ -18,6 +18,24 @@ Config.FuelDecor = "_FUEL_LEVEL" -- don't touch
 Config.Blacklist = {
 	--"Adder",
 	--276773164
+	"surge",
+	"iwagen",
+	"voltic",
+	"voltic2",
+	"raiden",
+	"cyclone",
+	"tezeract",
+	"neon",
+	"omnisegt",
+	"iwagen",
+	"caddy",
+	"caddy2",
+	"caddy3",
+	"airtug",
+	"rcbandito",
+	"imorgon",
+	"dilettante",
+	"khamelion"
 }
 
 -- Class multipliers. If you want SUVs to use less fuel, you can change it to anything under 1.0, and vise versa.

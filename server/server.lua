@@ -57,3 +57,11 @@ RegisterNetEvent("ps-fuel:server:PayForFuel", function (amount)
 	if not player then return end
 	player.Functions.RemoveMoney('cash', amount)
 end)
+
+QBCore.Functions.CreateCallback("ps-fuel:server:fuelCanPurchase", function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+
+	Player.Functions.AddItem("weapon_petrolcan", 1, false)
+	TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items["weapon_petrolcan"], 'add')
+
+end)

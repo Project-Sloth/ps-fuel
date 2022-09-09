@@ -188,13 +188,11 @@ end)
 RegisterNetEvent('ps-fuel:client:buyCan', function()
 	local ped = PlayerPedId()
 	if not HasPedGotWeapon(ped, 883325847) then
-		if QBCore.Functions.GetPlayerData().money['cash'] >= Config.canCost then
-			TriggerServerEvent('QBCore:Server:AddItem', "weapon_petrolcan", 1)
-			TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add")
-			TriggerServerEvent('ps-fuel:server:PayForFuel', Config.canCost, GetPlayerServerId(PlayerId()))
-		else
-			QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
-		end
+		QBCore.Functions.TriggerCallback('ps-fuel:server:fuelCanPurchase', function(hasMoney)
+			if hasMoney then 
+				TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add") -- Just put this here so the if statement don't feel empty.
+			end
+		end)
 	end
 end)
 

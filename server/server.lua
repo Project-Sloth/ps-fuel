@@ -57,3 +57,19 @@ RegisterNetEvent("ps-fuel:server:PayForFuel", function (amount)
 	if not player then return end
 	player.Functions.RemoveMoney('cash', amount)
 end)
+
+QBCore.Functions.CreateCallback('ps-fuel:server:fuelCanPurchase', function(source, cb)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local cashBalance = Player.PlayerData.money.cash
+	if not Player then return end
+    if cashBalance >= Config.canCost then
+		Player.Functions.RemoveMoney('cash', Config.canCost)
+        Player.Functions.AddItem("weapon_petrolcan", 1, false)
+		TriggerClientEvent('QBCore:Notify', src, "You purchased a jerry can for $"..Config.canCost, "success")
+        cb(true)
+    else
+        TriggerClientEvent('QBCore:Notify', src, "You dont have enough cash on you..", "error")
+        cb(false)
+    end
+end)

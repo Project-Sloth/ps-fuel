@@ -109,7 +109,7 @@ if Config.ShowNearestGasStationOnly then
 		end
 	end)
 	
-elseif Config.ShowAllGasStations then
+else
 	CreateThread(function()
 		for _, gasStationCoords in pairs(Config.GasStationsBlips) do
 			CreateBlip(gasStationCoords)

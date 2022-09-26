@@ -209,7 +209,7 @@ RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 		exports['qb-menu']:openMenu({
 			{
 				header = "Gas Station",
-				txt = "The total cost of refueling the Gas can will be "..price.."$",
+				txt = "The total cost of refueling the Gas can will be "..Config.refuelCost.."$",
 				params = {
 					event = "ps-fuel:client:refuelCan",
 				}

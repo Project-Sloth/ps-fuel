@@ -325,11 +325,13 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 				disableMouse = false,
 				disableCombat = true,
 			}, {}, {}, {}, function() -- Done
-				SetFuel(vehicle, 100)
-				local totalAmmo = math.floor(math.abs(ammo - fuelToAdd))
+				local newVehicleFuel = 100
+				local totalAmmo = math.floor(ammo - fuelToAdd)
 				if totalAmmo < 0 then
+					newVehicleFuel = tonumber(CurFuel + math.floor(ammo/45))
 					totalAmmo = 0
 				end
+				SetFuel(vehicle, newVehicleFuel)
 				TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, totalAmmo)
 				PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
 				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)

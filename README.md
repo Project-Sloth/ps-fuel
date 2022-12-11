@@ -142,8 +142,6 @@ https://user-images.githubusercontent.com/91661118/169447776-815aae46-53e0-40cd-
 #### Refueling vehicle:
 https://user-images.githubusercontent.com/91661118/169447249-b20abaca-fd1b-49ef-88c2-b6683b266f41.mp4
 
-# DMCA Protection Certificate
-![image](https://user-images.githubusercontent.com/82112471/171916122-95422e07-0831-4d7e-bf27-c4b31945801f.png)
 
 ### Credits:
 Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long-awaited issue of jerry cans not saving the proper amount of fuel each time you equip it. This release wouldn't be possible without them.

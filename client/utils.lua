@@ -74,6 +74,10 @@ function isCloseVeh()
     vehicle = getVehicleInDirection(coordA, coordB)
     if DoesEntityExist(vehicle) and NetworkHasControlOfEntity(vehicle) then
         return true
+	else
+		TaskTurnPedToFaceEntity(ped, closestVehicle, 1000)
+		Wait(1000)
+		return true
     end
     return false
 end

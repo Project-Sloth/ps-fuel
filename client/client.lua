@@ -257,7 +257,7 @@ RegisterNetEvent('ps-fuel:client:SendMenuToServer', function()
 	if HasPedGotWeapon(ped, 883325847) then
 		if GetAmmoInPedWeapon(ped, 883325847) ~= 0 then
 			if CurFuel < 95 then
-				TriggerServerEvent('ps-fuel:server:OpenMenu', 0, inGasStatio, true)
+				TriggerServerEvent('ps-fuel:server:OpenMenu', 0, inGasStation, true)
 			else
 				QBCore.Functions.Notify(Lang:t("notify.vehicle_full"), "error")
 			end

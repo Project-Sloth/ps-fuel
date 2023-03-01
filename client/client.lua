@@ -355,7 +355,9 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 					if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
 						local Chance = math.random(1, 100)
 						if Chance <= Config.BlowUpChance then
+							Wait(1000)
 							AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
+							DeleteObject(gasProp)
 							return
 						end
 					end

@@ -285,7 +285,6 @@ end)
 RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 	local gasProp = 0
 	local gasNozzle = "prop_cs_fuel_nozle"
-	local ped = PlayerPedId()
 	local vehicle = QBCore.Functions.GetClosestVehicle()
 	local ped = PlayerPedId()
 	local CurFuel = GetFuel(vehicle)

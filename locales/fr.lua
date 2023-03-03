@@ -8,4 +8,11 @@ local Translations = {
         ["already_full"] = "Le jerrican est déjà plein",
     }
 }
-Lang = Locale:new({phrases = Translations, warnOnMissing = true})
+
+if GetConvar('qb_locale', 'en') == 'fr' then
+    Lang = Locale:new({
+        phrases = Translations,
+        warnOnMissing = true,
+        fallbackLang = Lang,
+    })
+end

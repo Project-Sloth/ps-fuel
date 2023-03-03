@@ -57,7 +57,7 @@ CreateThread(function()
 				type = "client",
 				event = "ps-fuel:client:SendMenuToServer",
 				icon = "fas fa-gas-pump",
-				label = "Refuel Vehicle",
+				label = Lang:t('info.refuel_vehicle'),
 				canInteract = function()
 					return inGasStation or HasPedGotWeapon(PlayerPedId(), 883325847)
 				end
@@ -176,8 +176,8 @@ end)
 RegisterNetEvent('ps-fuel:client:buyCanMenu', function()
 	exports['qb-menu']:openMenu({
 		{
-			header = "Gas Station",
-			txt = 'The total cost is going to be: $'..Config.canCost..' including taxes.',
+			header = Lang:t('info.gas_station'),
+			txt = Lang:t('info.total_can_cost', {value = Config.canCost}),
 			params = {
 				event = "ps-fuel:client:buyCan",
 			}
@@ -208,8 +208,8 @@ RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 		price = math.floor(fuelToAdd * Config.fuelPrice)
 		exports['qb-menu']:openMenu({
 			{
-				header = "Gas Station",
-				txt = "The total cost of refueling the Gas can will be "..Config.refuelCost.."$",
+				header = Lang:t('info.gas_station'),
+				txt = Lang:t("info.total_refuel_cost", {value = Config.refuelCost}),
 				params = {
 					event = "ps-fuel:client:refuelCan",
 				}
@@ -300,11 +300,11 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 		local weapon = GetSelectedPedWeapon(PlayerPedId())
 		local ammo = GetAmmoInPedWeapon(PlayerPedId(), weapon)
 		if fuelToAdd == 0 then
-			QBCore.Functions.Notify("Vehicle already full", "error")
+			QBCore.Functions.Notify(Lang:t('error.vehicle_already_full'), "error")
 			return
 		end
 		if ammo <= 40 then
-			QBCore.Functions.Notify("No fuel in gas can", "error")
+			QBCore.Functions.Notify(Lang:t('error.no_fuel_gas_can'), "error")
 		else
 			RequestAnimDict("weapon@w_sp_jerrycan")
 			while not HasAnimDictLoaded('weapon@w_sp_jerrycan') do
@@ -390,14 +390,13 @@ exports['qb-target']:AddTargetModel(props, {
 			type = "client",
 			event = "ps-fuel:client:buyCanMenu",
 			icon = "fas fa-burn",
-			label = "Buy Jerry Can",
-			
+			label = Lang:t('info.buy_jerry_can'),
 		},
 		{
 			type = "client",
 			event = "ps-fuel:client:refuelCanMenu",
 			icon = "fas fa-gas-pump",
-			label = "Refuel Jerry Can",
+			label = Lang:t('info.refuel_jerry_can'),
 			canInteract = function(entity)
 				return isHoldingWeapon(GetHashKey("weapon_petrolcan"))
 			end,

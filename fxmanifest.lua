@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 description 'ps-fuel'
-version '1.0'
+version '1.1'
 author 'github.com/Project-Sloth'
 
 client_scripts {
@@ -18,7 +18,7 @@ server_scripts {
 shared_scripts {
 	'@qb-core/shared/locale.lua',
 	'locales/en.lua',
-	-- 'locales/de.lua',
+	'locales/*.lua',
 	'shared/config.lua',
 }
 

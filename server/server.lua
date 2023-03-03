@@ -21,8 +21,8 @@ RegisterNetEvent("ps-fuel:server:OpenMenu", function (amount, inGasStation, hasW
 	if inGasStation == true and not hasWeapon then
 		TriggerClientEvent('qb-menu:client:openMenu', src, {
 			{
-				header = 'Gas Station',
-				txt = 'The total cost is going to be: $'..total..' including taxes.' ,
+				header = Lang:t('info.gas_station'),
+				txt = Lang:t('info.total_cost', {value = total}),
 				params = {
 					event = "ps-fuel:client:RefuelVehicle",
 					args = total,
@@ -32,8 +32,8 @@ RegisterNetEvent("ps-fuel:server:OpenMenu", function (amount, inGasStation, hasW
 	else
 		TriggerClientEvent('qb-menu:client:openMenu', src, {
 			{
-				header = 'Gas Station',
-				txt = 'Refuel from jerry can' ,
+				header = Lang:t('info.gas_station'),
+				txt = Lang:t('info.refuel_from_jerry_can') ,
 				params = {
 					event = "ps-fuel:client:RefuelVehicle",
 					args = total,
@@ -66,10 +66,10 @@ QBCore.Functions.CreateCallback('ps-fuel:server:fuelCanPurchase', function(sourc
     if cashBalance >= Config.canCost then
 		Player.Functions.RemoveMoney('cash', Config.canCost)
         Player.Functions.AddItem("weapon_petrolcan", 1, false)
-		TriggerClientEvent('QBCore:Notify', src, "You purchased a jerry can for $"..Config.canCost, "success")
+		TriggerClientEvent('QBCore:Notify', src, Lang:t('info.purchased_jerry_can', {value = Config.canCost}), "success")
         cb(true)
     else
-        TriggerClientEvent('QBCore:Notify', src, "You dont have enough cash on you..", "error")
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.not_enough_cash'), "error")
         cb(false)
     end
 end)

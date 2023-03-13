@@ -285,7 +285,6 @@ end)
 RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 	local gasProp = 0
 	local gasNozzle = "prop_cs_fuel_nozle"
-	local ped = PlayerPedId()
 	local vehicle = QBCore.Functions.GetClosestVehicle()
 	local ped = PlayerPedId()
 	local CurFuel = GetFuel(vehicle)
@@ -356,7 +355,9 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost)
 					if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
 						local Chance = math.random(1, 100)
 						if Chance <= Config.BlowUpChance then
+							Wait(1000)
 							AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
+							DeleteObject(gasProp)
 							return
 						end
 					end

@@ -24,7 +24,7 @@ RegisterNetEvent("ps-fuel:server:OpenMenu", function (amount, inGasStation, hasW
 				header = Lang:t('info.gas_station'),
 				txt = Lang:t('info.total_cost', {value = total}),
 				params = {
-					event = "ps-fuel:client:RefuelVehicle",
+					event = "ps-fuel:client:ShowInput",
 					args = total,
 				}
 			},
@@ -35,7 +35,7 @@ RegisterNetEvent("ps-fuel:server:OpenMenu", function (amount, inGasStation, hasW
 				header = Lang:t('info.gas_station'),
 				txt = Lang:t('info.refuel_from_jerry_can') ,
 				params = {
-					event = "ps-fuel:client:RefuelVehicle",
+					event = "ps-fuel:client:ShowInput",
 					args = total,
 				}
 			},
@@ -50,12 +50,12 @@ QBCore.Functions.CreateCallback('ps-fuel:server:fuelCan', function(source, cb)
     cb(itemData)
 end)
 
-RegisterNetEvent("ps-fuel:server:PayForFuel", function (amount)
+RegisterNetEvent("ps-fuel:server:PayForFuel", function (amount, paymentMethod)
 	local src = source
 	if not src then return end
 	local player = QBCore.Functions.GetPlayer(src)
 	if not player then return end
-	player.Functions.RemoveMoney('cash', amount)
+	player.Functions.RemoveMoney(paymentMethod, amount)
 end)
 
 QBCore.Functions.CreateCallback('ps-fuel:server:fuelCanPurchase', function(source, cb)

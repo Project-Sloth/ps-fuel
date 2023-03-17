@@ -413,6 +413,8 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost, paymentMet
 				if QBCore.Functions.GetPlayerData().money['cash'] <= refillCost then
 					QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
 				else
+					TaskTurnPedToFaceEntity(ped, vehicle, 5000)
+					Wait(2000)
 					RequestAnimDict("amb@world_human_security_shine_torch@male@base")
 					while not HasAnimDictLoaded('amb@world_human_security_shine_torch@male@base') do
 						Wait(100)
@@ -447,12 +449,12 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost, paymentMet
 						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
 						PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
 						Wait(500)
-						StopAnimTask(ped, "timetable@gardener@filling_can", 'timetable@gardener@filling_can', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
 					end, function() -- Cancel
 						refueling = false
 						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
 						QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
-						StopAnimTask(ped, "timetable@gardener@filling_can", 'timetable@gardener@filling_can', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
 					end)
 				end
 			end

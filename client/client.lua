@@ -380,28 +380,33 @@ AddEventHandler('weapons:client:SetCurrentWeapon', function(data, bool)
 end)
 
 RegisterNetEvent('ps-fuel:client:ShowInput', function (refillCost)
+	local ped = PlayerPedId()
 	local playerMoney = QBCore.Functions.GetPlayerData().money
-	local dialog = exports['qb-input']:ShowInput({
-		header = "Gas Station",
-		submitText = "Accept Charge: $"..refillCost,
-		inputs = {
-			{
-				text = "Payment Methods",
-				name = "billtype",
-				type = "select",
-				options = { 
-					{ value = "cash", text = "Cash" },
-					{ value = "bank", text = "Card" }
+	if not HasPedGotWeapon(ped, 883325847) then
+		local dialog = exports['qb-input']:ShowInput({
+			header = "Gas Station",
+			submitText = "Accept Charge: $"..refillCost,
+			inputs = {
+				{
+					text = "Payment Methods",
+					name = "billtype",
+					type = "select",
+					options = { 
+						{ value = "cash", text = "Cash" },
+						{ value = "bank", text = "Card" }
+					},
 				},
 			},
-		},
-	})
-	if dialog ~= nil then
-		if playerMoney[dialog.billtype] >= refillCost then
-			TriggerEvent('ps-fuel:client:RefuelVehicle', refillCost, dialog.billtype)
-		else
-			QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+		})
+		if dialog ~= nil then
+			if playerMoney[dialog.billtype] >= refillCost then
+				TriggerEvent('ps-fuel:client:RefuelVehicle', refillCost, dialog.billtype)
+			else
+				QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+			end
 		end
+	else
+		TriggerEvent('ps-fuel:client:RefuelVehicle')
 	end
 end)
 

@@ -96,6 +96,9 @@ CreateThread(function()
 				event = "ps-fuel:client:buyCanMenu",
 				icon = "fas fa-burn",
 				label = Lang:t('info.buy_jerry_can'),
+				canInteract = function(entity)
+					return not HasPedGotWeapon(PlayerPedId(), 883325847)
+				end,
 			},
 			{
 				num = 4,
@@ -224,22 +227,48 @@ RegisterNetEvent('ps-fuel:client:buyCanMenu', function()
 			header = Lang:t('info.gas_station'),
 			txt = Lang:t('info.total_can_cost', {value = Config.canCost}),
 			params = {
-				event = "ps-fuel:client:buyCan",
+				event = "ps-fuel:client:ShowCanInput",
 			}
 		},
 	})
 end)
 
-RegisterNetEvent('ps-fuel:client:buyCan', function()
-	local ped = PlayerPedId()
-	if not HasPedGotWeapon(ped, 883325847) then
-		QBCore.Functions.TriggerCallback('ps-fuel:server:fuelCanPurchase', function(hasMoney)
-			if hasMoney then 
-				TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add") -- Just put this here so the if statement don't feel empty.
-			end
-		end)
+RegisterNetEvent('ps-fuel:client:ShowCanInput', function ()
+	local playerMoney = QBCore.Functions.GetPlayerData().money
+	local dialog = exports['qb-input']:ShowInput({
+		header = "Gas Station",
+		submitText = "Accept Charge: $"..Config.canCost,
+		inputs = {
+			{
+				text = "Payment Methods",
+				name = "billtype",
+				type = "select",
+				options = {
+					{ value = "cash", text = "Cash" },
+					{ value = "bank", text = "Card" }
+				},
+			},
+		},
+	})
+	if dialog ~= nil then
+		if playerMoney[dialog.billtype] >= Config.canCost then
+			TriggerServerEvent('ps-fuel:server:BuyCan', dialog.billtype)
+		else
+			QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+		end
 	end
 end)
+
+-- RegisterNetEvent('ps-fuel:client:buyCan', function()
+-- 	local ped = PlayerPedId()
+-- 	if not HasPedGotWeapon(ped, 883325847) then
+-- 		QBCore.Functions.TriggerCallback('ps-fuel:server:fuelCanPurchase', function(hasMoney)
+-- 			if hasMoney then 
+-- 				TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add") -- Just put this here so the if statement don't feel empty.
+-- 			end
+-- 		end)
+-- 	end
+-- end)
 
 RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 	local ped = PlayerPedId()
@@ -251,21 +280,44 @@ RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 	local fuelToAdd = tonumber(ammotoAdd/45)
 	if fuelToAdd ~= 0 then
 		price = math.floor(fuelToAdd * Config.fuelPrice)
-		exports['qb-menu']:openMenu({
-			{
-				header = Lang:t('info.gas_station'),
-				txt = Lang:t("info.total_refuel_cost", {value = Config.refuelCost}),
-				params = {
-					event = "ps-fuel:client:refuelCan",
-				}
+		local playerMoney = QBCore.Functions.GetPlayerData().money
+		local dialog = exports['qb-input']:ShowInput({
+			header = "Gas Station",
+			submitText = "Accept Charge: $"..Config.refuelCost,
+			inputs = {
+				{
+					text = "Payment Methods",
+					name = "billtype",
+					type = "select",
+					options = { 
+						{ value = "cash", text = "Cash" },
+						{ value = "bank", text = "Card" }
+					},
+				},
 			},
 		})
+		if dialog ~= nil then
+			if playerMoney[dialog.billtype] >= Config.refuelCost then
+				exports['qb-menu']:openMenu({
+					{
+						header = Lang:t('info.gas_station'),
+						txt = Lang:t("info.total_refuel_cost", {value = Config.refuelCost}),
+						params = {
+							event = "ps-fuel:client:refuelCan",
+							args = dialog.billtype,
+						}
+					},
+				})
+			else
+				QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+			end
+		end
 	else
 		QBCore.Functions.Notify(Lang:t("already_full"), "error")
 	end
 end)
 
-RegisterNetEvent('ps-fuel:client:refuelCan', function()
+RegisterNetEvent('ps-fuel:client:refuelCan', function(paymentMethod)
 	local vehicle = QBCore.Functions.GetClosestVehicle()
 	local ped = PlayerPedId()
 	local CurFuel = GetVehicleFuelLevel(vehicle)
@@ -280,7 +332,7 @@ RegisterNetEvent('ps-fuel:client:refuelCan', function()
 				disableMouse = false,
 				disableCombat = true,
 			}, {}, {}, {}, function() -- Done
-				TriggerServerEvent('ps-fuel:server:PayForFuel', Config.refuelCost, GetPlayerServerId(PlayerId()))
+				TriggerServerEvent('ps-fuel:server:PayForFuel', Config.refuelCost, paymentMethod, GetPlayerServerId(PlayerId()))
 				TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, tonumber(4500))
 				PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
 				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
@@ -330,13 +382,13 @@ end)
 RegisterNetEvent('ps-fuel:client:ShowInput', function (refillCost)
 	local playerMoney = QBCore.Functions.GetPlayerData().money
 	local dialog = exports['qb-input']:ShowInput({
-		header = "Payment Methods",
+		header = "Gas Station",
 		submitText = "Accept Charge: $"..refillCost,
 		inputs = {
 			{
-				text = "",
-				name = "billtype", 
-				type = "radio",
+				text = "Payment Methods",
+				name = "billtype",
+				type = "select",
 				options = { 
 					{ value = "cash", text = "Cash" },
 					{ value = "bank", text = "Card" }

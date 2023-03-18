@@ -8,7 +8,9 @@ A NoPixel inspired functionality fuel system that uses PolyZones that target spe
 ### Dependencies:
 * [qb-target](https://github.com/BerkieBb/qb-target)
 * [qb-menu](https://github.com/qbcore-framework/qb-menu)
+* [qb-input](https://github.com/qbcore-framework/qb-input)
 * [polyzone](https://github.com/qbcore-framework/PolyZone)
+* [interact-sound](https://github.com/qbcore-framework/interact-sound)
 
 <br>
 <br>
@@ -110,6 +112,9 @@ After it takes you to spot we need, copy this snippet and paste it over the few 
 
 ![Code_yecDDjuRVG](https://user-images.githubusercontent.com/91661118/169425085-6eaeead9-9398-4ac0-8e0f-b6d116326e97.gif)
 
+### Step 5:
+Copy the sounds inside the sounds folder and paste/drag it into your interact-sounds folder located at resources/[standalone]/interact-sound/client/html/sounds
+
 <br>
 <br>
 
@@ -145,5 +150,7 @@ https://user-images.githubusercontent.com/91661118/169447249-b20abaca-fd1b-49ef-
 
 ### Credits:
 Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long-awaited issue of jerry cans not saving the proper amount of fuel each time you equip it. This release wouldn't be possible without them.
+
+https://github.com/CodineDev/cdn-fuel where i took some of the sounds from
 
 ##### Copyright © 2022 Project Sloth. All rights reserved.

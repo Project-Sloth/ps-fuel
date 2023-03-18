@@ -9,6 +9,8 @@ local Translations = {
     },
     info = {
         ["refuel_vehicle"] = "Refuel Vehicle",
+        ["take_nozzle"] = "Take Nozzle",
+        ["return_nozzle"] = "Return Nozzle",
         ["gas_station"] = "Gas Station",
         ["total_can_cost"] = "The total cost is going to be: $%{value} including taxes",
         ["total_refuel_cost"] = "The total cost of refueling the gas can will be $%{value}",

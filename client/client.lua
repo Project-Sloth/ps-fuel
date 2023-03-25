@@ -236,16 +236,16 @@ end)
 RegisterNetEvent('ps-fuel:client:ShowCanInput', function ()
 	local playerMoney = QBCore.Functions.GetPlayerData().money
 	local dialog = exports['qb-input']:ShowInput({
-		header = "Gas Station",
-		submitText = "Accept Charge: $"..Config.canCost,
+		header = Lang:t('info.gas_station'),
+		submitText = Lang:t('info.accept_charge', {cost = Config.canCost}),
 		inputs = {
 			{
-				text = "Payment Methods",
+				text = Lang:t('info.payment_methods'),
 				name = "billtype",
 				type = "select",
 				options = {
-					{ value = "cash", text = "Cash" },
-					{ value = "bank", text = "Card" }
+					{ value = "cash", text = Lang:t('info.cash') },
+					{ value = "bank", text = Lang:t('info.card') }
 				},
 			},
 		},
@@ -282,16 +282,16 @@ RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 		price = math.floor(fuelToAdd * Config.fuelPrice)
 		local playerMoney = QBCore.Functions.GetPlayerData().money
 		local dialog = exports['qb-input']:ShowInput({
-			header = "Gas Station",
-			submitText = "Accept Charge: $"..Config.refuelCost,
+			header = Lang:t('info.gas_station'),
+			submitText = Lang:t('info.accept_charge', {cost = Config.refuelCost}),
 			inputs = {
 				{
-					text = "Payment Methods",
+					text = Lang:t('info.payment_methods'),
 					name = "billtype",
 					type = "select",
 					options = { 
-						{ value = "cash", text = "Cash" },
-						{ value = "bank", text = "Card" }
+						{ value = "cash", text = Lang:t('info.cash') },
+						{ value = "bank", text = Lang:t('info.card') }
 					},
 				},
 			},
@@ -384,16 +384,16 @@ RegisterNetEvent('ps-fuel:client:ShowInput', function (refillCost)
 	local playerMoney = QBCore.Functions.GetPlayerData().money
 	if not HasPedGotWeapon(ped, 883325847) then
 		local dialog = exports['qb-input']:ShowInput({
-			header = "Gas Station",
-			submitText = "Accept Charge: $"..refillCost,
+			header = Lang:t('info.gas_station'),
+			submitText = Lang:t('info.accept_charge', {cost = refillCost}),
 			inputs = {
 				{
-					text = "Payment Methods",
+					text = Lang:t('info.payment_methods'),
 					name = "billtype",
 					type = "select",
 					options = { 
-						{ value = "cash", text = "Cash" },
-						{ value = "bank", text = "Card" }
+						{ value = "cash", text = Lang:t('info.cash') },
+						{ value = "bank", text = Lang:t('info.card') }
 					},
 				},
 			},

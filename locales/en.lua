@@ -19,6 +19,10 @@ local Translations = {
         ["total_cost"] = "The total cost is going to be: $%{value} including taxes",
         ["refuel_from_jerry_can"] = "Refuel from jerry can",
         ["purchased_jerry_can"] = "You purchased a jerry can for $%{value}",
+        ["accept_charge"] = "Accept Charge: $%{cost}",
+        ["payment_methods"] = "Payment Methods",
+        ["cash"] = "Cash",
+        ["card"] = "Card",
     },
     error = {
         ["vehicle_already_full"] = "Vehicle already full",

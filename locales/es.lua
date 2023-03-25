@@ -9,7 +9,9 @@ local Translations = {
     },
     info = {
         ["refuel_vehicle"] = "Rellenar vehículo",
-        ["gas_station"] = "Estación de gasolina",
+        ["take_nozzle"] = "Tomar la boquilla",
+        ["return_nozzle"] = "Devolver la boquilla",
+        ["gas_station"] = "Estación de servicio",
         ["total_can_cost"] = "El costo total va a ser: $%{value} incluyendo impuestos",
         ["total_refuel_cost"] = "El costo total de rellenar del bidón de gasolina será $%{value}",
         ["buy_jerry_can"] = "Comprar bidón de gasolina",
@@ -17,6 +19,10 @@ local Translations = {
         ["total_cost"] = "El costo total será de: $%{value} incluyendo impuestos",
         ["refuel_from_jerry_can"] = "Rellenar de bidón de gasolina",
         ["purchased_jerry_can"] = "Has comprado un bidón de gasolina por $%{value}",
+        ["accept_charge"] = "Aceptar cargo: $%{cost}",
+        ["payment_methods"] = "Métodos de pago",
+        ["cash"] = "Efectivo",
+        ["card"] = "Tarjeta",
     },
     error = {
         ["vehicle_already_full"] = "El vehículo ya está lleno",

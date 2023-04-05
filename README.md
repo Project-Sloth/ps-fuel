@@ -19,7 +19,7 @@ A NoPixel inspired functionality fuel system that uses PolyZones that target spe
 
 
 ### Start installing now
-We will now provide you with a step-by-step guide for the installation process. Shouldn't take too long and it shouldn't be too confusing either! 
+We will now provide you with a step-by-step guide for the installation process. Shouldn't take too long and it shouldn't be too confusing either!
 
 ### Step 1:
 Go ahead and start by dragging and dropping ps-fuel into your designated resources folder.
@@ -29,13 +29,13 @@ If you are still lost, Slothy has created a few GIF's to help guide you through 
 ![explorer_rKiz0tBzmo](https://user-images.githubusercontent.com/91661118/169417369-59282006-7284-477d-853f-c29b108baa5d.gif)
 
 ### Step 2:
-Open your entire resources folder with Visual Studio Code (or whichever program you use) and replace all exsiting exports titled "LegacyFuel" with "ps-fuel" instead. 
+Open your entire resources folder with Visual Studio Code (or whichever program you use) and replace all exsiting exports titled "ps-fuel" with "ps-fuel" instead.
 
 **If you have the previous resource "lj-fuel" do the same thing and replace that with "ps-fuel" or just get this newer version to avoid any conflictions or confusion.**
 
 ![explorer_vpSwery89h](https://user-images.githubusercontent.com/91661118/169423238-99659010-718d-4d95-a73e-8aa2b232ebb4.gif)
 
-### Step 3: 
+### Step 3:
 First copy the snippet below and then navigate to your **qb-smallresources/client/ignore.lua**
 
 ```lua

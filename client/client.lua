@@ -18,7 +18,6 @@ local props = {
 local CurrentWeaponData = {}
 local hasNozzle = false
 local gasNozzle = nil
-local refueling = false
 -- Functions
 
 local function isHoldingWeapon(weaponHash)
@@ -57,11 +56,11 @@ CreateThread(function()
 		options = {
 			{
 				type = "client",
-				event = "ps-fuel:client:SendMenuToServer",
+				event = "ps-fuel:client:RefuelVehicle",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.refuel_vehicle'),
 				canInteract = function()
-					return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847) 
+					return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847)
 				end
 			}
 		},
@@ -141,7 +140,7 @@ if Config.ShowNearestGasStationOnly then
 			local coords = GetEntityCoords(PlayerPedId())
 			local closest = 1000
 			local closestCoords
-			
+
 			for _, gasStationCoords in pairs(Config.GasStationsBlips) do
 				local dstcheck = #(coords - gasStationCoords)
 				if dstcheck < closest then
@@ -156,7 +155,7 @@ if Config.ShowNearestGasStationOnly then
 			Wait(10000)
 		end
 	end)
-	
+
 else
 	CreateThread(function()
 		for _, gasStationCoords in pairs(Config.GasStationsBlips) do
@@ -221,23 +220,21 @@ end)
 
 -- Client Events
 
-RegisterNetEvent('ps-fuel:client:buyCanMenu', function()
-	exports['qb-menu']:openMenu({
-		{
-			header = Lang:t('info.gas_station'),
-			txt = Lang:t('info.total_can_cost', {value = Config.canCost}),
-			params = {
-				event = "ps-fuel:client:ShowCanInput",
-			}
-		},
-	})
+AddEventHandler('weapons:client:SetCurrentWeapon', function(data, bool)
+	if bool ~= false then
+		CurrentWeaponData = data
+	else
+		CurrentWeaponData = {}
+	end
+	CanShoot = bool
 end)
 
-RegisterNetEvent('ps-fuel:client:ShowCanInput', function ()
-	local playerMoney = QBCore.Functions.GetPlayerData().money
-	local dialog = exports['qb-input']:ShowInput({
-		header = "Gas Station",
-		submitText = "Accept Charge: $"..Config.canCost,
+------------------------------------------------------------
+-- [[ Jerry Can ]] --
+RegisterNetEvent('ps-fuel:client:buyCanMenu', function()
+	local dialog = 	exports['qb-input']:ShowInput({
+		header = Lang:t('info.gas_station'),
+		submitText = "Purchase for: $"..Config.canCost,
 		inputs = {
 			{
 				text = "Payment Methods",
@@ -251,268 +248,231 @@ RegisterNetEvent('ps-fuel:client:ShowCanInput', function ()
 		},
 	})
 	if dialog ~= nil then
-		if playerMoney[dialog.billtype] >= Config.canCost then
-			TriggerServerEvent('ps-fuel:server:BuyCan', dialog.billtype)
-		else
-			QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
-		end
+		TriggerServerEvent('ps-fuel:server:BuyCan', dialog.billtype)
 	end
 end)
-
--- RegisterNetEvent('ps-fuel:client:buyCan', function()
--- 	local ped = PlayerPedId()
--- 	if not HasPedGotWeapon(ped, 883325847) then
--- 		QBCore.Functions.TriggerCallback('ps-fuel:server:fuelCanPurchase', function(hasMoney)
--- 			if hasMoney then 
--- 				TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add") -- Just put this here so the if statement don't feel empty.
--- 			end
--- 		end)
--- 	end
--- end)
 
 RegisterNetEvent('ps-fuel:client:refuelCanMenu', function()
 	local ped = PlayerPedId()
-	local price = 0
-	local weapon = GetSelectedPedWeapon(ped)
-	local ammo = GetAmmoInPedWeapon(ped, weapon)
-	local ammotoAdd = 4500 - ammo
-	
-	local fuelToAdd = tonumber(ammotoAdd/45)
-	if fuelToAdd ~= 0 then
-		price = math.floor(fuelToAdd * Config.fuelPrice)
-		local playerMoney = QBCore.Functions.GetPlayerData().money
-		local dialog = exports['qb-input']:ShowInput({
-			header = "Gas Station",
-			submitText = "Accept Charge: $"..Config.refuelCost,
-			inputs = {
-				{
-					text = "Payment Methods",
-					name = "billtype",
-					type = "select",
-					options = { 
-						{ value = "cash", text = "Cash" },
-						{ value = "bank", text = "Card" }
+	local playerMoney = QBCore.Functions.GetPlayerData().money
+	if HasPedGotWeapon(ped, 883325847) then
+		local currentFuel = GetAmmoInPedWeapon(ped, 883325847)
+		local fuelToAdd = (4500-currentFuel)/45 -- x/100
+		print(currentFuel, fuelToAdd)
+		if currentFuel < 4500 and fuelToAdd >= 0 then
+			local gradeDialog = exports['qb-input']:ShowInput({
+				header = Lang:t('info.gas_station'),
+				inputs = {
+					{
+						text = "Fuel Grade",
+						name = "grade",
+						type = "select",
+						options = {
+							{ value = "Regular", text = "Regular ($"..Config.FuelPrices["Regular"].."/gallon)" },
+							{ value = "MidGrade", text = "Mid-Grade ($"..Config.FuelPrices["MidGrade"].."/gallon)" },
+							{ value = "Premium", text = "Premium ($"..Config.FuelPrices["Premium"].."/gallon)" },
+							{ value = "Diesel", text = "Diesel ($"..Config.FuelPrices["Diesel"].."/gallon)" },
+							{ value = "E85", text = "E85 ($"..Config.FuelPrices["E85"].."/gallon)" }
+						},
 					},
 				},
-			},
-		})
-		if dialog ~= nil then
-			if playerMoney[dialog.billtype] >= Config.refuelCost then
-				exports['qb-menu']:openMenu({
-					{
-						header = Lang:t('info.gas_station'),
-						txt = Lang:t("info.total_refuel_cost", {value = Config.refuelCost}),
-						params = {
-							event = "ps-fuel:client:refuelCan",
-							args = dialog.billtype,
-						}
+			})
+			if gradeDialog ~= nil then
+				local cost = math.floor((Config.FuelPrices[gradeDialog.grade]*fuelToAdd)*100)/100
+				local dialog = exports['qb-input']:ShowInput({
+					header = Lang:t('info.gas_station'),
+					submitText = "Purchase for: $"..cost,
+					inputs = {
+						{
+							text = "Payment Methods",
+							name = "billtype",
+							type = "select",
+							options = {
+								{ value = "cash", text = "Cash" },
+								{ value = "bank", text = "Card" }
+							},
+						},
 					},
 				})
-			else
-				QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+				if dialog ~= nil then
+					if playerMoney[dialog.billtype] >= (Config.FuelPrices[gradeDialog.grade]*fuelToAdd) then
+						RequestAnimDict("weapon@w_sp_jerrycan")
+						while not HasAnimDictLoaded('weapon@w_sp_jerrycan') do Wait(100) end
+						TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
+						QBCore.Functions.Progressbar("refuel-car", "Refueling", (Config.RefuelTime*fuelToAdd*1000), false, true, {
+							disableMovement = true,
+							disableCarMovement = true,
+							disableMouse = false,
+							disableCombat = true,
+						}, {}, {}, {}, function() -- Done
+							TriggerServerEvent('ps-fuel:server:PayForFuel', dialog.billtype, gradeDialog.grade, fuelToAdd)
+							TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, tonumber(4500))
+							PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
+							StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						end, function() -- Cancel
+							QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
+							StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						end)
+					else
+						QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+					end
+				end
 			end
-		end
-	else
-		QBCore.Functions.Notify(Lang:t("already_full"), "error")
-	end
-end)
-
-RegisterNetEvent('ps-fuel:client:refuelCan', function(paymentMethod)
-	local vehicle = QBCore.Functions.GetClosestVehicle()
-	local ped = PlayerPedId()
-	local CurFuel = GetVehicleFuelLevel(vehicle)
-	if HasPedGotWeapon(ped, 883325847) then
-		if GetAmmoInPedWeapon(ped, 883325847) < 4500 then
-			RequestAnimDict("weapon@w_sp_jerrycan")
-			while not HasAnimDictLoaded('weapon@w_sp_jerrycan') do Wait(100) end
-			TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
-			QBCore.Functions.Progressbar("refuel-car", "Refueling", 10000, false, true, {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = false,
-				disableCombat = true,
-			}, {}, {}, {}, function() -- Done
-				TriggerServerEvent('ps-fuel:server:PayForFuel', Config.refuelCost, paymentMethod, GetPlayerServerId(PlayerId()))
-				TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, tonumber(4500))
-				PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
-				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-			end, function() -- Cancel
-				QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
-				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-			end)
 		else
 			QBCore.Functions.Notify(Lang:t("notify.jerrycan_full"), "error")
 		end
 	end
 end)
 
-RegisterNetEvent('ps-fuel:client:SendMenuToServer', function()
+------------------------------------------------------------
+-- [[ Refuel Vehicle ]] --
+RegisterNetEvent('ps-fuel:client:RefuelVehicle', function()
 	local vehicle = QBCore.Functions.GetClosestVehicle()
-	local CurFuel = GetVehicleFuelLevel(vehicle)
-	local refillCost = Round(Config.RefillCost - CurFuel) * Config.CostMultiplier
+	local curFuel = GetVehicleFuelLevel(vehicle)
+	local fuelToAdd = 100 - curFuel -- x/100
 	local ped = PlayerPedId()
+	local playerMoney = QBCore.Functions.GetPlayerData().money
+	local time = Config.RefuelTime*fuelToAdd*1000
+
+	if not (fuelToAdd > 0) then
+		QBCore.Functions.Notify(Lang:t('error.vehicle_already_full'), "error")
+		return
+	end
+
 	if HasPedGotWeapon(ped, 883325847) then
-		if GetAmmoInPedWeapon(ped, 883325847) ~= 0 then
-			if CurFuel < 95 then
-				TriggerServerEvent('ps-fuel:server:OpenMenu', 0, inGasStation, true)
+		if GetAmmoInPedWeapon(ped, 883325847) >= 0 then
+			local curCanFuel = GetAmmoInPedWeapon(ped, 883325847)
+			if curCanFuel > 0 then
+				isFueling = true
+				RequestAnimDict("weapon@w_sp_jerrycan")
+				while not HasAnimDictLoaded('weapon@w_sp_jerrycan') do
+					Wait(100)
+				end
+				TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
+				if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
+					local Chance = math.random(1, 100)
+					if Chance <= Config.BlowUpChance then
+						Wait(1000)
+						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.3)
+						AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
+						return
+					end
+				end
+				local totalAmmo = curCanFuel - (fuelToAdd*45)
+				if totalAmmo < 0 then
+					totalAmmo = 0
+					time = Config.RefuelTime*(curCanFuel/45)*1000
+					fuelToAdd = curCanFuel/45
+				end
+
+				QBCore.Functions.Progressbar("refuel-car", "Refueling", time, false, true, {
+					disableMovement = true,
+					disableCarMovement = true,
+					disableMouse = false,
+					disableCombat = true,
+				}, {}, {}, {}, function() -- Done
+					SetFuel(vehicle, (curFuel + fuelToAdd))
+					TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, totalAmmo)
+					PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
+					StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+					isFueling = false
+				end, function() -- Cancel
+					isFueling = false
+					QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
+					StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+				end)
 			else
-				QBCore.Functions.Notify(Lang:t("notify.vehicle_full"), "error")
+				QBCore.Functions.Notify(Lang:t('error.no_fuel_gas_can'), "error")
+				return
 			end
 		else
 			QBCore.Functions.Notify(Lang:t("notify.jerrycan_empty"), "error")
 		end
 	else
-		if CurFuel < 95 then
-			TriggerServerEvent('ps-fuel:server:OpenMenu', refillCost, inGasStation, false)
-		else
-			QBCore.Functions.Notify(Lang:t("notify.vehicle_full"), "error")
-		end
-	end
-end)
-
-AddEventHandler('weapons:client:SetCurrentWeapon', function(data, bool)
-	if bool ~= false then
-		CurrentWeaponData = data
-	else
-		CurrentWeaponData = {}
-	end
-	CanShoot = bool
-end)
-
-RegisterNetEvent('ps-fuel:client:ShowInput', function (refillCost)
-	local ped = PlayerPedId()
-	local playerMoney = QBCore.Functions.GetPlayerData().money
-	if not HasPedGotWeapon(ped, 883325847) then
-		local dialog = exports['qb-input']:ShowInput({
-			header = "Gas Station",
-			submitText = "Accept Charge: $"..refillCost,
-			inputs = {
-				{
-					text = "Payment Methods",
-					name = "billtype",
-					type = "select",
-					options = { 
-						{ value = "cash", text = "Cash" },
-						{ value = "bank", text = "Card" }
+		if inGasStation and hasNozzle then
+			local gradeDialog = exports['qb-input']:ShowInput({
+				header = Lang:t('info.gas_station'),
+				inputs = {
+					{
+						text = "Fuel Grade",
+						name = "grade",
+						type = "select",
+						options = {
+							{ value = "Regular", text = "Regular ($"..Config.FuelPrices["Regular"].."/gallon)" },
+							{ value = "MidGrade", text = "Mid-Grade ($"..Config.FuelPrices["MidGrade"].."/gallon)" },
+							{ value = "Premium", text = "Premium ($"..Config.FuelPrices["Premium"].."/gallon)" },
+							{ value = "Diesel", text = "Diesel ($"..Config.FuelPrices["Diesel"].."/gallon)" },
+							{ value = "E85", text = "E85 ($"..Config.FuelPrices["E85"].."/gallon)" }
+						},
 					},
 				},
-			},
-		})
-		if dialog ~= nil then
-			if playerMoney[dialog.billtype] >= refillCost then
-				TriggerEvent('ps-fuel:client:RefuelVehicle', refillCost, dialog.billtype)
-			else
-				QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
-			end
-		end
-	else
-		TriggerEvent('ps-fuel:client:RefuelVehicle')
-	end
-end)
-
-RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost, paymentMethod)
-	local vehicle = QBCore.Functions.GetClosestVehicle()
-	local ped = PlayerPedId()
-	local CurFuel = GetFuel(vehicle)
-	local time = (100 - CurFuel) * 400
-	local vehicleCoords = GetEntityCoords(vehicle)
-	if inGasStation == false and not HasPedGotWeapon(ped, 883325847) then
-	elseif inGasStation == false and GetAmmoInPedWeapon(ped, 883325847) == 0 then
-		return
-	end
-	if HasPedGotWeapon(ped, 883325847) then
-		local fuelToAdd = tonumber((100 - CurFuel) * 45)
-		local weapon = GetSelectedPedWeapon(ped)
-		local ammo = GetAmmoInPedWeapon(ped, weapon)
-		if fuelToAdd == 0 then
-			QBCore.Functions.Notify(Lang:t('error.vehicle_already_full'), "error")
-			return
-		end
-		if ammo <= 40 then
-			QBCore.Functions.Notify(Lang:t('error.no_fuel_gas_can'), "error")
-		else
-			RequestAnimDict("weapon@w_sp_jerrycan")
-			while not HasAnimDictLoaded('weapon@w_sp_jerrycan') do
-				Wait(100)
-			end
-			TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
-			if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
-				local Chance = math.random(1, 100)
-				if Chance <= Config.BlowUpChance then
-					AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
-					return
-				end
-			end
-			TriggerEvent("ps-fuel:client:fuelTick", vehicle)
-			QBCore.Functions.Progressbar("refuel-car", "Refueling", time, false, true, {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = false,
-				disableCombat = true,
-			}, {}, {}, {}, function() -- Done
-				SetFuel(vehicle, 100)
-				local totalAmmo = math.floor(math.abs(ammo - fuelToAdd))
-				if totalAmmo < 0 then
-					totalAmmo = 0
-				end
-				TriggerServerEvent("weapons:server:UpdateWeaponAmmo", CurrentWeaponData, totalAmmo)
-				PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
-				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-				isFueling = false
-			end, function() -- Cancel
-				QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
-				StopAnimTask(ped, "weapon@w_sp_jerrycan", "fire", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-			end)
-		end
-	else
-		if inGasStation then
-			if isCloseVeh() then
-				if QBCore.Functions.GetPlayerData().money['cash'] <= refillCost then
-					QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
-				else
-					TaskTurnPedToFaceEntity(ped, vehicle, 5000)
-					Wait(2000)
-					RequestAnimDict("amb@world_human_security_shine_torch@male@base")
-					while not HasAnimDictLoaded('amb@world_human_security_shine_torch@male@base') do
-						Wait(100)
-					end
-					TaskPlayAnim(ped, "amb@world_human_security_shine_torch@male@base", "base", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
-					refueling = true
-					if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
-						local Chance = math.random(1, 100)
-						if Chance <= Config.BlowUpChance then
-							Wait(1000)
-							TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.3)
-							AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
-							DeleteObject(gasNozzle)
-							gasNozzle = nil
-							refueling = false
-							hasNozzle = false
-							return
+			})
+			if gradeDialog ~= nil then
+				local cost = math.floor((Config.FuelPrices[gradeDialog.grade]*fuelToAdd)*100)/100
+				local dialog = exports['qb-input']:ShowInput({
+					header = Lang:t('info.gas_station'),
+					submitText = "Purchase for: $"..cost,
+					inputs = {
+						{
+							text = "Payment Methods",
+							name = "billtype",
+							type = "select",
+							options = {
+								{ value = "cash", text = "Cash" },
+								{ value = "bank", text = "Card" }
+							},
+						},
+					},
+				})
+				if dialog ~= nil then
+					if playerMoney[dialog.billtype] >= (Config.FuelPrices[gradeDialog.grade]*fuelToAdd) then
+						TaskTurnPedToFaceEntity(ped, vehicle, 5000)
+						Wait(2000)
+						RequestAnimDict("amb@world_human_security_shine_torch@male@base")
+						while not HasAnimDictLoaded('amb@world_human_security_shine_torch@male@base') do
+							Wait(100)
 						end
+						TaskPlayAnim(ped, "amb@world_human_security_shine_torch@male@base", "base", 8.0, 1.0, -1, 1, 0, 0, 0, 0 )
+						isFueling = true
+						if GetIsVehicleEngineRunning(vehicle) and Config.VehicleBlowUp then
+							local Chance = math.random(1, 100)
+							if Chance <= Config.BlowUpChance then
+								Wait(1000)
+								TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.3)
+								AddExplosion(vehicleCoords, 5, 50.0, true, false, true)
+								DeleteObject(gasNozzle)
+								gasNozzle = nil
+								isFueling = false
+								hasNozzle = false
+								return
+							end
+						end
+						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "putbacknozzle", 0.6)
+						Wait(1000)
+						TriggerServerEvent("InteractSound_SV:PlayOnSource", "fueling-sound", 0.5)
+						QBCore.Functions.Progressbar("refuel-car", "Refueling", time, false, true, {
+							disableMovement = true,
+							disableCarMovement = true,
+							disableMouse = false,
+							disableCombat = true,
+						}, {}, {}, {}, function() -- Done
+							isFueling = false
+							TriggerServerEvent('ps-fuel:server:PayForFuel', dialog.billtype, gradeDialog.grade, fuelToAdd)
+							SetFuel(vehicle, 100)
+							TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
+							PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
+							Wait(500)
+							StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						end, function() -- Cancel
+							isFueling = false
+							TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
+							QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
+							StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
+						end)
+					else
+						QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
+						return
 					end
-					TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "putbacknozzle", 0.6)
-					Wait(1000)
-					TriggerServerEvent("InteractSound_SV:PlayOnSource", "fueling-sound", 0.5)
-					QBCore.Functions.Progressbar("refuel-car", "Refueling", time, false, true, {
-						disableMovement = true,
-						disableCarMovement = true,
-						disableMouse = false,
-						disableCombat = true,
-					}, {}, {}, {}, function() -- Done
-						refueling = false
-						TriggerServerEvent('ps-fuel:server:PayForFuel', refillCost, paymentMethod, GetPlayerServerId(PlayerId()))
-						SetFuel(vehicle, 100)
-						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
-						PlaySound(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 0, 0, 1)
-						Wait(500)
-						StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-					end, function() -- Cancel
-						refueling = false
-						TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "fuelstop", 0.6)
-						QBCore.Functions.Notify(Lang:t("notify.refuel_cancel"), "error")
-						StopAnimTask(ped, "amb@world_human_security_shine_torch@male@base", 'base', 3.0, 3.0, -1, 2, 0, 0, 0, 0)
-					end)
 				end
 			end
 		end

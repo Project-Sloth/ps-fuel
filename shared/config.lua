@@ -3,13 +3,16 @@ Config.ShowNearestGasStationOnly = true -- show nearest gas stations when close 
 Config.LeaveEngineRunning = true -- when set to true vehicle engine will run upon exiting vehicle
 Config.VehicleBlowUp = true -- when set to true vehicle has a chance to blow up if engine is left running
 Config.BlowUpChance = 5 -- percentage for chance of engine explosion
-Config.RefillCost = 100 -- default price
-Config.CostMultiplier = 3.0 -- tax basically
-Config.canCost = 400 -- buy jerry can price
-Config.refuelCost = 600 -- refueling jerry can price
-Config.GlobalTax = 15.0
 
-Config.fuelPrice = 2.0 -- fuel price in litres I guess
+Config.canCost = 400 -- buy jerry can price
+Config.RefuelTime = 0.5 -- per gallon seconds
+Config.FuelPrices = { -- per "gallon" or what ever
+    Regular = 3.50,
+    MidGrade = 3.93,
+    Premium = 4.25,
+    Diesel = 4.20,
+    E85 = 2.85,
+}
 
 Config.FuelDecor = "_FUEL_LEVEL" -- don't touch
 
@@ -36,13 +39,13 @@ Config.Blacklist = {
 	"dilettante",
 	"khamelion",
 	"wheelchair",
-    	"bmx",
-    	"tribike3",
-    	"fixter",
-    	"cruiser",
-    	"scorcher",
-    	"tribike2",
-    	"tribike",
+    "bmx",
+    "tribike3",
+    "fixter",
+    "cruiser",
+    "scorcher",
+    "tribike2",
+    "tribike",
 }
 
 -- Class multipliers. If you want SUVs to use less fuel, you can change it to anything under 1.0, and vise versa.
@@ -128,7 +131,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 28.2,
         maxz = 30.3,
     },
-    [2] = { 
+    [2] = {
         zones = {
             vector2(-45.04, -1764.04),
             vector2(-60.67, -1751.32),
@@ -140,7 +143,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 28.2,
         maxz = 30.4,
     },
-    [3] = { 
+    [3] = {
         zones = {
             vector2(-544.35, -1214.84),
             vector2(-532.38, -1188.11),
@@ -152,7 +155,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 17.4,
         maxz = 21.04,
     },
-    [4] = { 
+    [4] = {
         zones = {
             vector2(-703.67, -922.96),
             vector2(-703.1, -945.78),
@@ -163,7 +166,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 18.0,
         maxz = 20.4,
     },
-    [5] = { 
+    [5] = {
         zones = {
             vector2(249.16, -1238.56),
             vector2(248.45, -1277.9),
@@ -173,7 +176,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 28.1,
         maxz = 30.3,
     },
-    [6] = { 
+    [6] = {
         zones = {
             vector2(835.16, -1016.11),
             vector2(835.17, -1038.91),
@@ -184,7 +187,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 25.1,
         maxz = 28.1,
     },
-    [7] = { 
+    [7] = {
         zones = {
             vector2(1194.29, -1390.77),
             vector2(1222.02, -1390.89),
@@ -198,7 +201,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 34.1,
         maxz = 36.3,
     },
-    [8] = { 
+    [8] = {
         zones = {
             vector2(1175.53, -345.75),
             vector2(1196.56, -341.94),
@@ -209,7 +212,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 68.1,
         maxz = 70.2,
     },
-    [9] = { 
+    [9] = {
         zones = {
             vector2(607.47, 256.21),
             vector2(621.22, 249.25),
@@ -223,7 +226,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 101.9,
         maxz = 104.8,
     },
-    [10] = { 
+    [10] = {
         zones = {
             vector2(-1436.74, -294.19),
             vector2(-1420.77, -280.07),
@@ -233,7 +236,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 45.0,
         maxz = 47.3,
     },
-    [11] = { 
+    [11] = {
         zones = {
             vector2(-2110.46, -304.06),
             vector2(-2114.37, -333.21),
@@ -254,7 +257,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 30.34,
         maxz = 32.5,
     },
-    [13] = { 
+    [13] = {
         zones = {
             vector2(163.43, 6589.83),
             vector2(199.63, 6593.83),
@@ -264,7 +267,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 30.7,
         maxz = 32.91,
     },
-    [14] = { 
+    [14] = {
         zones = {
             vector2(1688.68, 6415.44),
             vector2(1694.51, 6426.76),
@@ -274,7 +277,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 31.4,
         maxz = 34.2,
     },
-    [15] = { 
+    [15] = {
         zones = {
             vector2(1684.55, 4940.1),
             vector2(1677.23, 4927.9),
@@ -284,7 +287,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 41.05,
         maxz = 43.17,
     },
-    [16] = { 
+    [16] = {
         zones = {
             vector2(1993.86, 3774.78),
             vector2(2000.73, 3763.9),
@@ -294,7 +297,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 31.18,
         maxz = 33.60,
     },
-    [17] = { 
+    [17] = {
         zones = {
             vector2(1785.94, 3339.17),
             vector2(1793.17, 3326.67),
@@ -304,7 +307,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 40.0,
         maxz = 42.6,
     },
-    [18] = { 
+    [18] = {
         zones = {
             vector2(2670.27, 3261.09),
             vector2(2681.18, 3254.82),
@@ -314,7 +317,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 54.24,
         maxz = 56.4,
     },
-    [19] = { 
+    [19] = {
         zones = {
             vector2(1208.37, 2649.92),
             vector2(1197.52, 2661.37),
@@ -324,7 +327,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 36.7,
         maxz = 38.85,
     },
-    [20] = { 
+    [20] = {
         zones = {
             vector2(1049.94, 2664.15),
             vector2(1049.14, 2678.46),
@@ -334,7 +337,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 38.24,
         maxz = 40.55,
     },
-    [21] = { 
+    [21] = {
         zones = {
             vector2(257.59, 2600.27),
             vector2(256.42, 2610.27),
@@ -344,7 +347,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 43.60,
         maxz = 45.95,
     },
-    [22] = { 
+    [22] = {
         zones = {
             vector2(58.56, 2780.19),
             vector2(51.92, 2770.87),
@@ -354,7 +357,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 56.8,
         maxz = 58.9,
     },
-    [23] = { 
+    [23] = {
         zones = {
             vector2(-2544.79, 2320.18),
             vector2(-2546.07, 2348.81),
@@ -364,7 +367,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 32.05,
         maxz = 34.08,
     },
-    [24] = { 
+    [24] = {
         zones = {
             vector2(2539.1, 2600.33),
             vector2(2531.31, 2597.31),
@@ -384,7 +387,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 107.4,
         maxz = 109.4,
     },
-    [26] = { 
+    [26] = {
         zones = {
             vector2(-1780.57, 806.54),
             vector2(-1801.73, 783.76),
@@ -394,7 +397,7 @@ Config.GasStations = { -- gas station polyzones
         minz = 136.64,
         maxz = 139.9,
     },
-    [27] = { 
+    [27] = {
         zones = {
             vector2(-329.02, -1490.46),
             vector2(-300.69, -1474.47),

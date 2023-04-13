@@ -151,6 +151,4 @@ https://user-images.githubusercontent.com/91661118/169447249-b20abaca-fd1b-49ef-
 ### Credits:
 Huge thanks to [Snipe (pushkart2)](https://github.com/pushkart2) and [MonkeyWhisper](https://github.com/MonkeyWhisper) for figuring out the long-awaited issue of jerry cans not saving the proper amount of fuel each time you equip it. This release wouldn't be possible without them.
 
-https://github.com/CodineDev/cdn-fuel where i took some of the sounds from
-
 ##### Copyright © 2022 Project Sloth. All rights reserved.

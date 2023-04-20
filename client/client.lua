@@ -416,6 +416,7 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost, paymentMet
 	local CurFuel = GetFuel(vehicle)
 	local time = (100 - CurFuel) * 400
 	local vehicleCoords = GetEntityCoords(vehicle)
+	local playerMoney = QBCore.Functions.GetPlayerData().money
 	if inGasStation == false and not HasPedGotWeapon(ped, 883325847) then
 	elseif inGasStation == false and GetAmmoInPedWeapon(ped, 883325847) == 0 then
 		return
@@ -467,7 +468,7 @@ RegisterNetEvent('ps-fuel:client:RefuelVehicle', function(refillCost, paymentMet
 	else
 		if inGasStation then
 			if isCloseVeh() then
-				if QBCore.Functions.GetPlayerData().money['cash'] <= refillCost then
+				if playerMoney[paymentMethod] <= refillCost then
 					QBCore.Functions.Notify(Lang:t("notify.no_money"), "error")
 				else
 					TaskTurnPedToFaceEntity(ped, vehicle, 5000)

@@ -39,26 +39,29 @@ Open your entire resources folder with Visual Studio Code (or whichever program 
 First copy the snippet below and then navigate to your **qb-smallresources/client/ignore.lua**
 
 ```lua
-Citizen.CreateThread(function()
+RegisterNetEvent('QBCore:Client:DrawWeapon', function()
+    local sleep
     while true do
+        sleep = 500
         local ped = PlayerPedId()
         local weapon = GetSelectedPedWeapon(ped)
-		if weapon ~= GetHashKey("WEAPON_UNARMED") then
-			if IsPedArmed(ped, 6) then
-				DisableControlAction(1, 140, true)
-				DisableControlAction(1, 141, true)
-				DisableControlAction(1, 142, true)
-			end
+        if weapon ~= `WEAPON_UNARMED` then
+            if IsPedArmed(ped, 6) then
+                sleep = 0
+                DisableControlAction(1, 140, true)
+                DisableControlAction(1, 141, true)
+                DisableControlAction(1, 142, true)
+            end
 
-			if weapon == GetHashKey("WEAPON_FIREEXTINGUISHER")then
-				if IsPedShooting(ped) then
-					SetPedInfiniteAmmo(ped, true, GetHashKey("WEAPON_FIREEXTINGUISHER"))
-				end
-			end
-		else
-			Citizen.Wait(500)
-		end
-        Citizen.Wait(7)
+            if weapon == `WEAPON_FIREEXTINGUISHER` then
+                if IsPedShooting(ped) then
+                    SetPedInfiniteAmmo(ped, true, weapon)
+                end
+            end
+        else
+            break
+        end
+        Wait(sleep)
     end
 end)
 ```

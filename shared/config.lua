@@ -12,8 +12,8 @@ Config.fuelPrice = 2.0 -- fuel price in litres I guess
 
 Config.FuelDecor = "_FUEL_LEVEL" -- don't touch
 
-Config.interact = true
-
+Config.interact = false
+Config.oxtarget = false
 -- Blacklist certain vehicles. Use names or hashes. https://wiki.gtanet.work/index.php?title=Vehicle_Models
 Config.Blacklist = {
 	--"Adder",

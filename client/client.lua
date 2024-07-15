@@ -65,16 +65,6 @@ CreateThread(function()
             }
         })
 
-        local props = {
-            'prop_gas_pump_1d',
-            'prop_gas_pump_1a',
-            'prop_gas_pump_1b',
-            'prop_gas_pump_1c',
-            'prop_vintage_pump',
-            'prop_gas_pump_old2',
-            'prop_gas_pump_old3',
-        }
-        
         for _, model in ipairs(props) do
             -- Target Export
             exports.interact:AddModelInteraction({
@@ -116,6 +106,64 @@ CreateThread(function()
                 },
             })
         end
+	elseif Config.oxtarget then
+		local options = {
+			[1] = {
+				name = 'cdn-fuel:options:1',
+				icon = "fas fa-gas-pump",
+				canInteract = function()
+					return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847) 
+				end,
+				label = Lang:t('info.refuel_vehicle'),
+				onSelect = function()
+					TriggerEvent('ps-fuel:client:SendMenuToServer')
+				end
+			},
+		}
+
+		exports.ox_target:addGlobalVehicle(options)
+		
+		local modelOptions = {
+			[1] = {
+				name = "cdn-fuel:modelOptions:option_1",
+				event = "ps-fuel:client:takenozzle",
+				icon = "fas fa-gas-pump",
+				label = Lang:t('info.take_nozzle'),
+				canInteract = function(entity)
+					return not IsPedInAnyVehicle(PlayerPedId()) and not hasNozzle
+				end,
+			},
+			[2] = {
+				name = "cdn-fuel:modelOptions:option_2",
+				event = "ps-fuel:client:returnnozzle",
+				icon = "fas fa-gas-pump",
+				label = Lang:t('info.return_nozzle'),
+				canInteract = function(entity)
+					return hasNozzle and not refueling
+				end,
+			},
+			[3] = {
+				name = "cdn-fuel:modelOptions:option_3",
+				event = "ps-fuel:client:buyCanMenu",
+				icon = "fas fa-burn",
+				label = Lang:t('info.buy_jerry_can'),
+				canInteract = function(entity)
+					return not HasPedGotWeapon(PlayerPedId(), 883325847)
+				end,
+			},
+			[4] = {
+				name = "cdn-fuel:modelOptions:option_4",
+				event = "ps-fuel:client:refuelCanMenu",
+				icon = "fas fa-gas-pump",
+				label = Lang:t('info.refuel_jerry_can'),
+				canInteract = function(entity)
+					return isHoldingWeapon(GetHashKey("weapon_petrolcan"))
+				end,
+			},
+			
+		}
+
+		exports.ox_target:addModel(props, modelOptions)
 	else
 		local bones = {
             "petroltank",

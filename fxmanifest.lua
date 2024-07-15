@@ -3,7 +3,7 @@ game 'gta5'
 
 description 'ps-fuel'
 
-version '1.0.1'
+version '1.0.2'
 
 author 'github.com/Project-Sloth'
 

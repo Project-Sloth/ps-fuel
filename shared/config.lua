@@ -8,7 +8,7 @@ Config.CostMultiplier = 3.0 -- tax basically
 Config.canCost = 400 -- buy jerry can price
 Config.refuelCost = 600 -- refueling jerry can price
 Config.GlobalTax = 15.0
-
+Config.interact = true
 Config.fuelPrice = 2.0 -- fuel price in litres I guess
 
 Config.FuelDecor = "_FUEL_LEVEL" -- don't touch

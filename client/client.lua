@@ -42,37 +42,90 @@ end
 
 -- Threads
 
+    
 CreateThread(function()
-	local bones = {
-		"petroltank",
-		"petroltank_l",
-		"petroltank_r",
-		"wheel_rf",
-		"wheel_rr",
-		"petrolcap ",
-		"seat_dside_r",
-		"engine",
-	}
-	exports['qb-target']:AddTargetBone(bones, {
-		options = {
-			{
-				type = "client",
-				event = "ps-fuel:client:SendMenuToServer",
+		if Config.interact then
+        exports.interact:AddGlobalVehicleInteraction({
+            id = 'refuel_vehicle',
+            offset = vec3(0.0, 0.0, 0.0),
+            distance = 7.0,
+            interactDst = 5.0,
+            -- bone = 'boot', -- optional
+            -- ignoreLos = true,
+            options = {
+                {
+                    canInteract = function()
+                        return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847) 
+                    end,
+                    label = Lang:t('info.refuel_vehicle'),
+                    action = function()
+                        TriggerEvent('ps-fuel:client:SendMenuToServer')
+                    end
+                },
+            }
+        })
+
+        for _, model in ipairs(props) do
+            -- Target Export
+            exports.interact:AddModelInteraction({
+                model = model,  -- Replace 'props' with the specific model(s) if needed
+                offset = vec3(0.0, 0.0, 1.0),  -- Optional offset
+                name = 'fuelInteraction',  -- Optional interaction name
+                id = 'fuelPumpInteraction',  -- Unique ID for the interaction
+                distance = 8.0,  -- Interaction distance
+                interactDst = 2.0,  -- Distance within which interaction options are available
+                options = {
+                    {
+                        event = "ps-fuel:client:takenozzle",
+                        label = Lang:t('info.take_nozzle'),
+                        canInteract = function()
+                            return not IsPedInAnyVehicle(PlayerPedId()) and not hasNozzle
+                        end,
+                    },
+                    {
+                        event = "ps-fuel:client:returnnozzle",
+                        label = Lang:t('info.return_nozzle'),
+                        canInteract = function()
+                            return hasNozzle and not refueling
+                        end,
+                    },
+                    {
+                        event = "ps-fuel:client:buyCanMenu",
+                        label = Lang:t('info.buy_jerry_can'),
+                        canInteract = function(entity)
+                            return not HasPedGotWeapon(PlayerPedId(), 883325847)
+                        end,
+                    },
+                    {
+                        event = "ps-fuel:client:refuelCanMenu",
+                        label = Lang:t('info.refuel_jerry_can'),
+                        canInteract = function(entity)
+                            return isHoldingWeapon(GetHashKey("weapon_petrolcan"))
+                        end,
+                    },
+                },
+            })
+        end
+	elseif Config.oxtarget then
+		local options = {
+			[1] = {
+				name = 'cdn-fuel:options:1',
 				icon = "fas fa-gas-pump",
-				label = Lang:t('info.refuel_vehicle'),
 				canInteract = function()
 					return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847) 
+				end,
+				label = Lang:t('info.refuel_vehicle'),
+				onSelect = function()
+					TriggerEvent('ps-fuel:client:SendMenuToServer')
 				end
-			}
-		},
-		distance = 1.5,
-	})
-	-- Target Export
-	exports['qb-target']:AddTargetModel(props, {
-		options = {
-			{
-				num = 1,
-				type = "client",
+			},
+		}
+
+		exports.ox_target:addGlobalVehicle(options)
+		
+		local modelOptions = {
+			[1] = {
+				name = "cdn-fuel:modelOptions:option_1",
 				event = "ps-fuel:client:takenozzle",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.take_nozzle'),
@@ -80,9 +133,8 @@ CreateThread(function()
 					return not IsPedInAnyVehicle(PlayerPedId()) and not hasNozzle
 				end,
 			},
-			{
-				num = 2,
-				type = "client",
+			[2] = {
+				name = "cdn-fuel:modelOptions:option_2",
 				event = "ps-fuel:client:returnnozzle",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.return_nozzle'),
@@ -90,9 +142,8 @@ CreateThread(function()
 					return hasNozzle and not refueling
 				end,
 			},
-			{
-				num = 3,
-				type = "client",
+			[3] = {
+				name = "cdn-fuel:modelOptions:option_3",
 				event = "ps-fuel:client:buyCanMenu",
 				icon = "fas fa-burn",
 				label = Lang:t('info.buy_jerry_can'),
@@ -100,9 +151,8 @@ CreateThread(function()
 					return not HasPedGotWeapon(PlayerPedId(), 883325847)
 				end,
 			},
-			{
-				num = 4,
-				type = "client",
+			[4] = {
+				name = "cdn-fuel:modelOptions:option_4",
 				event = "ps-fuel:client:refuelCanMenu",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.refuel_jerry_can'),
@@ -110,9 +160,78 @@ CreateThread(function()
 					return isHoldingWeapon(GetHashKey("weapon_petrolcan"))
 				end,
 			},
-		},
-		distance = 2.0
-	})
+			
+		}
+
+		exports.ox_target:addModel(props, modelOptions)
+	else
+		local bones = {
+            "petroltank",
+            "petroltank_l",
+            "petroltank_r",
+            "wheel_rf",
+            "wheel_rr",
+            "petrolcap ",
+            "seat_dside_r",
+            "engine",
+        }
+        exports['qb-target']:AddTargetBone(bones, {
+            options = {
+                {
+                    type = "client",
+                    event = "ps-fuel:client:SendMenuToServer",
+                    icon = "fas fa-gas-pump",
+                    label = Lang:t('info.refuel_vehicle'),
+                    canInteract = function()
+                        return inGasStation and hasNozzle or HasPedGotWeapon(PlayerPedId(), 883325847) 
+                    end
+                }
+            },
+            distance = 1.5,
+        })
+        -- Target Export
+        exports['qb-target']:AddTargetModel(props, {
+            options = {
+                {
+                    type = "client",
+                    event = "ps-fuel:client:takenozzle",
+                    icon = "fas fa-gas-pump",
+                    label = Lang:t('info.take_nozzle'),
+                    canInteract = function(entity)
+                        return not IsPedInAnyVehicle(PlayerPedId()) and not hasNozzle
+                    end,
+                },
+                {
+                    type = "client",
+                    event = "ps-fuel:client:returnnozzle",
+                    icon = "fas fa-gas-pump",
+                    label = Lang:t('info.return_nozzle'),
+                    canInteract = function(entity)
+                        return hasNozzle and not refueling
+                    end,
+                },
+                {
+                    type = "client",
+                    event = "ps-fuel:client:buyCanMenu",
+                    icon = "fas fa-burn",
+                    label = Lang:t('info.buy_jerry_can'),
+                    canInteract = function(entity)
+                        return not HasPedGotWeapon(PlayerPedId(), 883325847)
+                    end,
+                },
+                {
+                    type = "client",
+                    event = "ps-fuel:client:refuelCanMenu",
+                    icon = "fas fa-gas-pump",
+                    label = Lang:t('info.refuel_jerry_can'),
+                    canInteract = function(entity)
+                        return isHoldingWeapon(GetHashKey("weapon_petrolcan"))
+                    end,
+                },
+            },
+            distance = 2.0
+        })
+    end
 end)
 
 if Config.LeaveEngineRunning then

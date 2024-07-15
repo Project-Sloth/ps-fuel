@@ -6,7 +6,7 @@ A NoPixel inspired functionality fuel system that uses PolyZones that target spe
 ![Project Sloth Buttons](https://user-images.githubusercontent.com/91661118/169454003-488c8994-eec9-4b92-9b0c-f3a675be7d1b.png)
 
 ### Dependencies:
-* [qb-target](https://github.com/BerkieBb/qb-target)
+* [qb-target](https://github.com/BerkieBb/qb-target) or [interact](https://github.com/darktrovx/interact) or [ox_target](https://github.com/overextended/ox_target)
 * [qb-menu](https://github.com/qbcore-framework/qb-menu)
 * [qb-input](https://github.com/qbcore-framework/qb-input)
 * [polyzone](https://github.com/qbcore-framework/PolyZone)
@@ -30,7 +30,6 @@ If you are still lost, Slothy has created a few GIF's to help guide you through 
 
 ### Step 2:
 Open your entire resources folder with Visual Studio Code (or whichever program you use) and replace all exsiting exports titled "LegacyFuel" with "ps-fuel" instead. 
-
 **If you have the previous resource "lj-fuel" do the same thing and replace that with "ps-fuel" or just get this newer version to avoid any conflictions or confusion.**
 
 ![explorer_vpSwery89h](https://user-images.githubusercontent.com/91661118/169423238-99659010-718d-4d95-a73e-8aa2b232ebb4.gif)

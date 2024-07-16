@@ -125,7 +125,7 @@ CreateThread(function()
 		
 		local modelOptions = {
 			[1] = {
-				name = "cdn-fuel:modelOptions:option_1",
+				name = "option_1",
 				event = "ps-fuel:client:takenozzle",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.take_nozzle'),
@@ -134,7 +134,7 @@ CreateThread(function()
 				end,
 			},
 			[2] = {
-				name = "cdn-fuel:modelOptions:option_2",
+				name = "option_2",
 				event = "ps-fuel:client:returnnozzle",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.return_nozzle'),
@@ -143,7 +143,7 @@ CreateThread(function()
 				end,
 			},
 			[3] = {
-				name = "cdn-fuel:modelOptions:option_3",
+				name = "option_3",
 				event = "ps-fuel:client:buyCanMenu",
 				icon = "fas fa-burn",
 				label = Lang:t('info.buy_jerry_can'),
@@ -152,7 +152,7 @@ CreateThread(function()
 				end,
 			},
 			[4] = {
-				name = "cdn-fuel:modelOptions:option_4",
+				name = "option_4",
 				event = "ps-fuel:client:refuelCanMenu",
 				icon = "fas fa-gas-pump",
 				label = Lang:t('info.refuel_jerry_can'),

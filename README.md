@@ -1,3 +1,10 @@
+# Archiving Older Repos (Focus on ps-mdt v3)
+
+To help streamline things a bit around here (for the little work we actually do 😅), I’m going to be archiving the repos listed below. This doesn’t mean they’re broken or unusable, it just means we won’t be pushing any further updates to them for now.
+
+Our main focus moving forward will be ps-mdt v3 and its dependencies.
+
+
 ![Project Sloth GitHub Project PS-FUEL Banner](https://user-images.githubusercontent.com/91661118/169398756-5c1a49b8-e21c-4a06-baa6-7fcc793c34e3.png)
 
 ### ps-fuel
